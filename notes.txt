@@ -1,0 +1,9 @@
+
+
+- google: latlng
+- mapbox: lnglat
+- lng = x axis
+- lat = y axis
+- bounds 
+    = [southWestX, southWestY, northEastX, northEastY]
+    = [bottomLeftX, bottomLeftY, topLeftX, topLeftY]
