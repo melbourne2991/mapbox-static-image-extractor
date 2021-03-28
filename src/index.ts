@@ -4,16 +4,32 @@ import fs from "fs";
 import { MapConfig } from "./types";
 import { download } from "./commands/download";
 import { stitch } from "./commands/stitch";
+import { extract } from "./commands/extract";
 
 program.requiredOption("-m, --map-dir <mapDir>", "Path to map directory");
 
-program.command("download").action(async () => {
-  await download(getContext());
+program.command("download").action(() => {
+  download(getContext()).catch(console.log);
 });
 
-program.command("stitch").action(async () => {
-  await stitch(getContext());
+program.command("stitch").action(() => {
+  stitch(getContext()).catch(console.log);
 });
+
+program
+  .requiredOption("-p, --pbf-file <pbfFile>", "Path to pbf")
+  .command("extract")
+
+  .action(() => {
+    console.log(program.opts());
+
+    const context = {
+      ...getContext(),
+      pbfFile: path.resolve(process.cwd(), program.opts().pbfFile),
+    };
+
+    extract(context).catch(console.log);
+  });
 
 program.parse(process.argv);
 
