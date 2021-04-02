@@ -16,9 +16,11 @@ class MapBoxStaticImageApi {
     accessToken,
     style
   }) {
+    let mappedStyle = style.replace("mapbox://styles/", "");
+
     this.buildEndpoint = bounds => {
       const boundsStr = `[${bounds.join(",")}]`;
-      return `https://api.mapbox.com/styles/v1/${style}/static/${boundsStr}/${imageWidth}x${imageHeight}?access_token=${accessToken}&attribution=false&logo=false&padding=0`;
+      return `https://api.mapbox.com/styles/v1/${mappedStyle}/static/${boundsStr}/${imageWidth}x${imageHeight}?access_token=${accessToken}&attribution=false&logo=false&padding=0`;
     };
   }
 

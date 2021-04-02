@@ -1,10 +1,10 @@
 {
-  "name": "mapgm",
+  "name": "@melb2991/map-utils",
   "version": "1.0.0",
   "main": "index.js",
   "license": "MIT",
   "bin": {
-    "mapgm": "./bin/mapgm.js"
+    "map-utils": "./bin/index.js"
   },
   "scripts": {
     "start": "babel-node -x '.ts' --presets @babel/preset-typescript --plugins @babel/plugin-transform-modules-commonjs ./src",
@@ -27,7 +27,9 @@
     "@types/mkdirp": "^1.0.1",
     "axios": "^0.21.1",
     "commander": "^7.1.0",
+    "dotenv": "^8.2.0",
     "gm": "^1.23.1",
+    "jsonschema": "^1.4.0",
     "mapnik": "^4.5.6",
     "mime-types": "^2.1.29",
     "mkdirp": "^1.0.4"

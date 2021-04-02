@@ -13,15 +13,18 @@ export async function download(ctx: Context) {
     zoomLevelReferenceBounds: ctx.zoomLevelReferenceBounds,
   });
 
+  if (!process.env.MAPBOX_ACCESS_TOKEN)
+    throw new Error("Missing Mapbox Access Token!");
+
   const mapboxStaticImageApi = new MapBoxStaticImageApi({
     imageHeight: ctx.imageSize,
     imageWidth: ctx.imageSize,
     accessToken: process.env.MAPBOX_ACCESS_TOKEN,
-    style: "melbourne2991/ckmh9pcbxjclk17o7d7x7nrkh",
+    style: ctx.mapStyle,
   });
 
   for (let zoomLevel of zoomLevels) {
-    const zoomLevelDirPath = path.resolve(ctx.mapPath, `data/${zoomLevel}`);
+    const zoomLevelDirPath = path.resolve(ctx.mapDirPath, `data/${zoomLevel}`);
     mkdirp(zoomLevelDirPath);
 
     const imageWriter = new ImageWriter({

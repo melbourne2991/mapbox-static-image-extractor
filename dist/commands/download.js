@@ -24,15 +24,16 @@ async function download(ctx) {
   const tileBoundsCalculator = new _TileBoundsCalculator.TileBoundsCalculator({
     zoomLevelReferenceBounds: ctx.zoomLevelReferenceBounds
   });
+  if (!process.env.MAPBOX_ACCESS_TOKEN) throw new Error("Missing Mapbox Access Token!");
   const mapboxStaticImageApi = new _MapBoxStaticImageApi.MapBoxStaticImageApi({
     imageHeight: ctx.imageSize,
     imageWidth: ctx.imageSize,
     accessToken: process.env.MAPBOX_ACCESS_TOKEN,
-    style: "melbourne2991/ckmh9pcbxjclk17o7d7x7nrkh"
+    style: ctx.mapStyle
   });
 
   for (let zoomLevel of zoomLevels) {
-    const zoomLevelDirPath = _path.default.resolve(ctx.mapPath, `data/${zoomLevel}`);
+    const zoomLevelDirPath = _path.default.resolve(ctx.mapDirPath, `data/${zoomLevel}`);
 
     (0, _mkdirp.default)(zoomLevelDirPath);
     const imageWriter = new _ImageWriter.ImageWriter({

@@ -5,24 +5,22 @@ export interface MapConfig {
   zoomLevelReferenceBounds: Record<number, Vec4>;
   mapBounds: Vec4;
   imageSize: number;
-  dbName: string;
   pbfFile: string;
+  mapStyle: string;
 }
 
 export interface BaseConfig {
   mapsDir: string;
-  dbConfig: {
-    user: string;
-    password: string;
-  };
-  pbfFile: string;
+  pbfDir: string;
   osmosisPath: string;
 }
 
-export type MergedConfig = MapConfig & BaseConfig;
-
-export interface Context extends MergedConfig {
-  mapPath: string;
+export interface Context {
+  mapDirPath: string;
   pbfPath: string;
-  clearDb?: boolean;
+  osmosisPath: string;
+  zoomLevelReferenceBounds: Record<number, Vec4>;
+  mapBounds: Vec4;
+  imageSize: number;
+  mapStyle: string;
 }

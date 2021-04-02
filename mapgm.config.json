@@ -1,5 +1,4 @@
 {
-  "mapsDir": "./maps",
   "dbConfig": {
     "user": "postgres",
     "password": "postgres"
