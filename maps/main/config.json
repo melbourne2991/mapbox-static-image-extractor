@@ -8,5 +8,7 @@
     -122.26201954402832,
     37.86535832880206
   ],
-  "imageSize": 640
+  "imageSize": 640,
+  "dbName": "main_map",
+  "pbfFile": "./us-west-latest.osm.pbf"
 }

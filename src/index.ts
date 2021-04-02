@@ -1,12 +1,13 @@
 import program from "commander";
 import path from "path";
 import fs from "fs";
-import { MapConfig } from "./types";
+import { BaseConfig, Context, MapConfig } from "./types";
 import { download } from "./commands/download";
 import { stitch } from "./commands/stitch";
 import { extract } from "./commands/extract";
+import { store } from "./commands/store";
 
-program.requiredOption("-m, --map-dir <mapDir>", "Path to map directory");
+program.requiredOption("-m, --map-name <mapName>", "Name of target map");
 
 program.command("download").action(() => {
   download(getContext()).catch(console.log);
@@ -16,35 +17,66 @@ program.command("stitch").action(() => {
   stitch(getContext()).catch(console.log);
 });
 
+program.command("extract").action(() => {
+  extract(getContext()).catch(console.log);
+});
+
 program
-  .requiredOption("-p, --pbf-file <pbfFile>", "Path to pbf")
-  .command("extract")
-
+  .option("-c, --clear-db")
+  .command("store")
   .action(() => {
-    console.log(program.opts());
+    const clearDb = program.opts().clearDb;
 
-    const context = {
+    store({
       ...getContext(),
-      pbfFile: path.resolve(process.cwd(), program.opts().pbfFile),
-    };
-
-    extract(context).catch(console.log);
+      clearDb,
+    }).catch(console.log);
   });
 
 program.parse(process.argv);
 
-function getContext() {
-  const mapDirFullPath = path.resolve(process.cwd(), program.opts().mapDir);
+function getContext(): Context {
+  const baseConfigFullPath = path.resolve(process.cwd(), "mapgm.config.json");
+  const baseConfig = readBaseConfig(baseConfigFullPath);
 
-  const context = {
-    ...readConfig(mapDirFullPath),
+  console.log(baseConfigFullPath);
+
+  const mapDirFullPath = path.resolve(
+    process.cwd(),
+    baseConfig.mapsDir,
+    program.opts().mapName
+  );
+
+  console.log(mapDirFullPath);
+
+  const mapConfig = readMapConfig(mapDirFullPath);
+
+  console.log(mapConfig);
+
+  const pbfFileFullPath = path.resolve(mapDirFullPath, mapConfig.pbfFile);
+
+  console.log(pbfFileFullPath);
+
+  const context: Context = {
+    ...baseConfig,
+    ...mapConfig,
+
     mapPath: mapDirFullPath,
+    pbfPath: pbfFileFullPath,
   };
 
   return context;
 }
 
-function readConfig(mapDirFullPath: string): MapConfig {
+function readBaseConfig(baseConfigFullPath: string): BaseConfig {
+  if (!fs.existsSync(baseConfigFullPath)) {
+    throw new Error(`Missing mapgm.config.json in: ${baseConfigFullPath}`);
+  }
+
+  return JSON.parse(fs.readFileSync(baseConfigFullPath, "utf8"));
+}
+
+function readMapConfig(mapDirFullPath: string): MapConfig {
   const configJsonPath = path.resolve(mapDirFullPath, "config.json");
 
   if (!fs.existsSync(configJsonPath)) {

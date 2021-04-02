@@ -19,7 +19,7 @@ export async function stitch(ctx: Context) {
 
     const zoomLevelDataPath = getZoomLevelDataPath(ctx, zoomLevel);
 
-    let gmOp = gm(undefined as string);
+    let gmOp = gm((undefined as unknown) as string);
 
     for (let [colIndex, col] of tileMatrix.entries()) {
       for (let rowIndex = col.length; rowIndex--; rowIndex > 0) {
