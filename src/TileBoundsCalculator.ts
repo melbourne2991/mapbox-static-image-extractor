@@ -20,6 +20,9 @@ export class TileBoundsCalculator<T extends Record<string, Vec4>> {
       this.zoomLevelReferenceBounds[zoomLevel] as Vec4
     );
 
+    console.log("zoomLevelRefBounds", this.zoomLevelReferenceBounds);
+    console.log("tileSize", tileSize);
+
     const len: Vec2 = [
       Math.ceil(targetSize[0] / tileSize[0]),
       Math.ceil(targetSize[1] / tileSize[1]),

@@ -15,6 +15,8 @@ class TileBoundsCalculator {
   getTilesFromTargetBounds = (targetBounds, zoomLevel) => {
     const targetSize = getBoundsSize(targetBounds);
     const tileSize = getBoundsSize(this.zoomLevelReferenceBounds[zoomLevel]);
+    console.log("zoomLevelRefBounds", this.zoomLevelReferenceBounds);
+    console.log("tileSize", tileSize);
     const len = [Math.ceil(targetSize[0] / tileSize[0]), Math.ceil(targetSize[1] / tileSize[1])];
     const tiles = [];
 
