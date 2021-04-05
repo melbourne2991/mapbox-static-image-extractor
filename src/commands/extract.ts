@@ -9,6 +9,6 @@ export const extract = async (ctx: Context) => {
     "--bounding-box",
     ...contextBoundsToOsmosis(ctx.mapBounds),
     "--write-xml",
-    `${ctx.mapDirPath}/data.osm.xml`,
+    `${ctx.mapDirPath}/data.osm`,
   ]);
 };

@@ -3,3 +3,4 @@ node_modules
 *.log
 maps/*
 .DS_Store
+dist

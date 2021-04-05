@@ -5,6 +5,7 @@ import { download } from "./commands/download";
 import { stitch } from "./commands/stitch";
 import { extract } from "./commands/extract";
 import { getContext } from "./context";
+import { emitGeojson } from "./commands/emit-geojson";
 
 program.requiredOption("-m, --map-name <mapName>", "Name of target map");
 
@@ -18,6 +19,10 @@ program.command("stitch").action(() => {
 
 program.command("extract").action(() => {
   extract(getContext(program.opts().mapName)).catch(console.log);
+});
+
+program.command("emit-geojson").action(() => {
+  emitGeojson(getContext(program.opts().mapName)).catch(console.log);
 });
 
 program.parse(process.argv);

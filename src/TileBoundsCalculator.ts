@@ -52,14 +52,14 @@ export class TileBoundsCalculator<T extends Record<string, Vec4>> {
   };
 }
 
-const BOUNDS_MIN_LAT = 0;
-const BOUNDS_MIN_LNG = 1;
-const BOUNDS_MAX_LAT = 2;
-const BOUNDS_MAX_LNG = 3;
+const BOUNDS_MIN_LNG = 0;
+const BOUNDS_MIN_LAT = 1;
+const BOUNDS_MAX_LNG = 2;
+const BOUNDS_MAX_LAT = 3;
 
 function getBoundsSize(bounds: Vec4): Vec2 {
   return [
-    bounds[BOUNDS_MAX_LAT] - bounds[BOUNDS_MIN_LAT],
     bounds[BOUNDS_MAX_LNG] - bounds[BOUNDS_MIN_LNG],
+    bounds[BOUNDS_MAX_LAT] - bounds[BOUNDS_MIN_LAT],
   ];
 }
