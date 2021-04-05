@@ -9,36 +9,39 @@ export async function stitch(ctx: Context) {
 
   const tileBoundsCalculator = new TileBoundsCalculator({
     zoomLevelReferenceBounds: ctx.zoomLevelReferenceBounds,
+    tileSizePx: [ctx.imageSize, ctx.imageSize],
+    targetBounds: ctx.mapBounds,
   });
 
   for (let zoomLevel of zoomLevels) {
-    const tileMatrix = tileBoundsCalculator.getTilesFromTargetBounds(
-      ctx.mapBounds,
-      zoomLevel
-    );
+    const zoomLevelData = tileBoundsCalculator.getZoomLevelData(zoomLevel);
 
     const zoomLevelDataPath = getZoomLevelDataPath(ctx, zoomLevel);
 
     let gmOp = gm((undefined as unknown) as string);
 
-    for (let [colIndex, col] of tileMatrix.entries()) {
-      for (let rowIndex = col.length; rowIndex--; rowIndex > 0) {
-        const fileName = `${colIndex}x${rowIndex}.png`;
-        const rowIndexRev = col.length - 1 - rowIndex;
-
-        const xOffset = colIndex * ctx.imageSize;
-        const yOffset = rowIndexRev * ctx.imageSize;
-
-        const filePath = path.resolve(zoomLevelDataPath, fileName);
-
-        gmOp = gmOp.in("-page", `+${xOffset}+${yOffset}`).in(filePath);
-      }
+    for (let [i, tile] of zoomLevelData.tiles.entries()) {
+      const fileName = `${i}.png`;
+      const filePath = path.resolve(zoomLevelDataPath, fileName);
+      gmOp = gmOp
+        .in("-page", `+${tile.pxOffset[0]}+${tile.pxOffset[1]}`)
+        .in(filePath);
     }
 
+    const stitchedPath = path.resolve(zoomLevelDataPath, "stitched.png");
+    const croppedPath = path.resolve(zoomLevelDataPath, "cropped.png");
+
     await new Promise((resolve, reject) => {
-      gmOp
-        .mosaic()
-        .write(path.resolve(zoomLevelDataPath, "stitched.png"), (err) => {
+      gmOp.mosaic().write(stitchedPath, (err) => {
+        if (err) return reject(err);
+        resolve(undefined);
+      });
+    });
+
+    await new Promise((resolve, reject) => {
+      gm(stitchedPath)
+        .crop(zoomLevelData.imageSizePx[0], zoomLevelData.imageSizePx[1], 0, 0)
+        .write(croppedPath, (err) => {
           if (err) return reject(err);
           resolve(undefined);
         });

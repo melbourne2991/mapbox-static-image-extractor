@@ -11,6 +11,8 @@ export async function download(ctx: Context) {
 
   const tileBoundsCalculator = new TileBoundsCalculator({
     zoomLevelReferenceBounds: ctx.zoomLevelReferenceBounds,
+    tileSizePx: [ctx.imageSize, ctx.imageSize],
+    targetBounds: ctx.mapBounds,
   });
 
   if (!process.env.MAPBOX_ACCESS_TOKEN)
@@ -31,18 +33,13 @@ export async function download(ctx: Context) {
       dirPath: zoomLevelDirPath,
     });
 
-    const tileMatrix = tileBoundsCalculator.getTilesFromTargetBounds(
-      ctx.mapBounds,
-      zoomLevel
-    );
+    const zoomLevelData = tileBoundsCalculator.getZoomLevelData(zoomLevel);
 
-    for (let [i, col] of tileMatrix.entries()) {
-      for (let [j, tile] of col.entries()) {
-        const response = await mapboxStaticImageApi.getImage(tile);
-        const ext = mime.extension(response.headers["content-type"]);
+    for (let [i, tile] of zoomLevelData.tiles.entries()) {
+      const response = await mapboxStaticImageApi.getImage(tile.lngLatBounds);
+      const ext = mime.extension(response.headers["content-type"]);
 
-        imageWriter.saveImage(response.data, `${i}x${j}.${ext}`);
-      }
+      imageWriter.saveImage(response.data, `${i}.${ext}`);
     }
   }
 }

@@ -1,7 +1,0 @@
-{
-  "dbConfig": {
-    "user": "postgres",
-    "password": "postgres"
-  },
-  "osmosisPath": "/Users/will/opt/osmosis"
-}
